@@ -14,9 +14,9 @@ router.get("/all-product", getAllProducts);
 router.get("/:product", getProduct);
 
 // middleware auth 
-router.post("/add-product",authenticate, addProduct);
-router.delete("/delete-product",authenticate, deleteProduct);
-router.put("/change-data",authenticate, updateProduct);
+router.post("/add-product",authenticate,isAdmin, addProduct);
+router.delete("/delete-product",authenticate,isAdmin, deleteProduct);
+router.put("/change-data",authenticate,isAdmin, updateProduct);
 
 
 module.exports = router;

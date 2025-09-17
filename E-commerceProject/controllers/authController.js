@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
   try {
-    const { firstname, lastname, email, phone, username, password } = req.body;
+    const { firstname, lastname, email, phone, username, password, role } = req.body;
 
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
@@ -13,6 +13,8 @@ const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const isFirstUser = (await User.countDocuments()) === 0;
+
     const user = new User({
       firstname,
       lastname,
@@ -20,16 +22,16 @@ const register = async (req, res) => {
       phone,
       username,
       password: hashedPassword,
+      role: isFirstUser ? "admin" : role || "user",
     });
 
     await user.save();
 
-    res.status(201).json({ message: "User registered successfully" });
+    res.status(201).json({ message: "User registered successfully", role: user.role });
   } catch (err) {
     res.status(500).json({ message: "Error registering user", error: err.message });
   }
 };
-
 
 const login = async (req, res) => {
   try {
@@ -41,13 +43,14 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
+
     const token = jwt.sign(
-      { id: user._id, username: user.username },
+      { id: user._id, username: user.username, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    res.json({ message: "Login successful", token });
+    res.json({ message: "Login successful", token, role: user.role });
   } catch (err) {
     res.status(500).json({ message: "Error logging in", error: err.message });
   }

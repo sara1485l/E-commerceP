@@ -11,20 +11,18 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
-const authRoutes = require("./routes/authRoutes");
-const userRoutes = require("./routes/userRoutes");
+// const authRoutes = require("./routes/authRoutes");
+// const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
-const cartRoutes = require("./routes/cartRoutes");
-const buyRoutes = require("./routes/buyRoutes");
-const couponRoutes = require("./routes/couponRoutes");
+// const cartRoutes = require("./routes/cartRoutes");
+// const buyRoutes = require("./routes/buyRoutes");
 
-// Use Routes
-app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
+// // Use Routes
+// app.use("/auth", authRoutes);
+// app.use("/user", userRoutes);
 app.use("/products", productRoutes);
-app.use("/shopping-cart", cartRoutes);
-app.use("/buy", buyRoutes);
-app.use("/coupon", couponRoutes);
+// app.use("/shopping-cart", cartRoutes);
+// app.use("/buy", buyRoutes);
 
 // Connect DB
 connectDB();

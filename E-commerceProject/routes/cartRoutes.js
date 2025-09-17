@@ -6,10 +6,11 @@ const {
   removeFromCart,
   clearCart,
 } = require("../controllers/cartController");
+const { authenticate, isAdmin } = require("../middleware/auth");
 
-router.get("/:username", getCart);
-router.post("/add", addToCart);
-router.delete("/remove", removeFromCart);
-router.delete("/clear", clearCart);
+router.get("/:username",authenticate, getCart);
+router.post("/add",authenticate, addToCart);
+router.delete("/remove",authenticate, removeFromCart);
+router.delete("/clear",authenticate, clearCart);
 
 module.exports = router;

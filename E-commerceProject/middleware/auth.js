@@ -1,4 +1,4 @@
-const { Auth } = require('../models/auth');
+const { Auth } = require('../../Coupen-Api-main/models/auth');
 
 const authenticate = async (req, res, next) => {
     try {

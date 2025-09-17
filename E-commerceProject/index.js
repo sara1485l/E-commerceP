@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const auth = require("./middleware/auth");
 
 dotenv.config();
 const app = express();
@@ -15,7 +16,9 @@ app.use(cors());
 // const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
-// const buyRoutes = require("./routes/buyRoutes");
+const buyRoutes = require("./routes/buyRoutes");
+
+app.use(auth);
 
 // // Use Routes
 // app.use("/auth", authRoutes);

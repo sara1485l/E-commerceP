@@ -1,8 +1,8 @@
 
 
 const express = require('express')
-const { buyWithoutDiscount } = require('../controllers/buy/WithoutDiscountController');
-const { buyWithDiscount } = require('../controllers/buy/WithDiscountController');
+const { buyWithoutDiscount } = require('../controllers/buyController/WithoutDiscountController');
+const { buyWithDiscount } = require('../controllers/buyController/WithDiscountController');
 
 const router = express.Router()
 

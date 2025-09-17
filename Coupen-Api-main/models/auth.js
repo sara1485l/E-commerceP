@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const model = mongoose.model;
 
-
-const authSchema = new mongoose.Schema({
+const authSchema = new Schema({
     username: {
         type: String,
         required: true
@@ -13,8 +14,15 @@ const authSchema = new mongoose.Schema({
     number : {
         type: Number,
         required: true
+    },
+    shoppingCart: {
+        type: [String], 
+        default: []
     }
 });
 
-const Auth = mongoose.model('Auth', authSchema);
-module.exports = {Auth};
+const Auth = model('Auth', authSchema);
+export default { Auth };
+
+
+

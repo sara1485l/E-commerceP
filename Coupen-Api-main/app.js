@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const {Coupen} = require('./models/coupen');
-const {Auth} = require('./models/auth');
+const {Auth} = require('./models/auth').default;
 const {connectDB} = require('./config/connDB');
 
 connectDB();
@@ -42,6 +42,71 @@ app.post('/discount', async (req, res) => {
     });
     res.send('Discount applied');
 })
+// 
+app.post('/buy/without-discount', async (req, res) => {
+  try {
+    const { username } = req.body;
+    const user = await Auth.findOne({ username });
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    const cartProducts = user.shoppingCart || [];
+    const products = await Coupen.find({ ProductName: { $in: cartProducts } });
+    const total = products.reduce((acc, p) => acc + p.price, 0);
+
+    return res.json({
+      ProductName: cartProducts,
+      total: `$${total}`
+    });
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+});
+
+app.post('/buy/discount', async (req, res) => {
+  try {
+    const { username, discount_coupen } = req.body;
+    const user = await Auth.findOne({ username });
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    const cartProducts = user.shoppingCart || [];
+    const products = await Coupen.find({ ProductName: { $in: cartProducts } });
+    const totalBefore = products.reduce((acc, p) => acc + p.price, 0);
+
+    const coupon = await Coupen.findOne({ code: discount_coupen });
+    if (!coupon) return res.status(400).json({ msg: "Invalid coupon" });
+
+    const discountAmount = (totalBefore * coupon.discount) / 100;
+    const totalAfter = totalBefore - discountAmount;
+
+    return res.json({
+      ProductName: cartProducts,
+      Total_before_discount: `$${totalBefore}`,
+      Total_after_discount: `$${totalAfter}`
+    });
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+});
+// 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 mongoose.connection.once('open', () => {
@@ -52,7 +117,7 @@ mongoose.connection.once('open', () => {
 })
 
 
-mongoose.mongoose.connection.on('error', (error) => {
+mongoose.connection.on('error', (error) => {
   console.error(error);
 });
 
